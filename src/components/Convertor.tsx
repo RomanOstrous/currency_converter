@@ -1,36 +1,59 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { CurrencyType } from '../types/CurrencyType';
 
 const Converter = () => {
   const [currencies, setCurrencies] = useState<CurrencyType[]>([]);
-  const [input1, setInput1] = useState(1);
+  const [input1, setInput1] = useState(0);
   const [input2, setInput2] = useState(0);
   const [select1, setSelect1] = useState('USD');
   const [select2, setSelect2] = useState('UAH');
 
+  const activeInput = useRef<'input1' | 'input2' | null>(null);
+
   useEffect(() => {
-    fetch('/currencies.json')
+    fetch('/currencies.json') // для конвертора роблю свій json бо на всіх api функціонал з квейрі параметрами платний
       .then((resp) => resp.json())
       .then((data) => setCurrencies(data.currencies));
   }, []);
 
-  useEffect(() => {
-    const fromCurrency = currencies.find((c) => c.name === select1);
-    const toCurrency = currencies.find((c) => c.name === select2)?.name;
+  const convert = (count: number, from: string, to: string) => {
+    const fromCurrency = currencies.find((c) => c.name === from);
+    const toCurrency = currencies.find((c) => c.name === to)?.name;
+
     if (fromCurrency && toCurrency) {
       const rate = fromCurrency.rates[toCurrency];
-      setInput2(input1 * rate);
+      return count * rate;
+    }
+    return 0;
+  };
+
+  useEffect(() => {
+    if (activeInput.current === 'input1') {
+      const newValue = convert(input1, select1, select2);
+      if (newValue !== input2) {
+        setInput2(newValue);
+      }
     }
   }, [input1, select1, select2, currencies]);
 
-  // useEffect(() => {
-  //   const fromCurrency = currencies.find(c => c.name === select2);
-  //   const toCurrency = currencies.find(c => c.name === select1)?.name;
-  //   if (fromCurrency && toCurrency) {
-  //     const rate = fromCurrency.rates[toCurrency];
-  //     setInput1(input2 * rate);
-  //   }
-  // }, [input2, select1, select2, currencies]);
+  useEffect(() => {
+    if (activeInput.current === 'input2') {
+      const newValue = convert(input2, select2, select1);
+      if (newValue !== input1) {
+        setInput1(newValue);
+      }
+    }
+  }, [input2, select1, select2, currencies]);
+
+  const handleInput1Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    activeInput.current = 'input1';
+    setInput1(+e.target.value);
+  };
+
+  const handleInput2Change = (e: React.ChangeEvent<HTMLInputElement>) => {
+    activeInput.current = 'input2';
+    setInput2(+e.target.value);
+  };
 
   return (
     <div>
@@ -46,7 +69,7 @@ const Converter = () => {
           type="number"
           min={0}
           value={input1}
-          onChange={(e) => setInput1(+e.target.value)}
+          onChange={handleInput1Change}
         />
       </div>
 
@@ -59,10 +82,10 @@ const Converter = () => {
           ))}
         </select>
         <input
-          value={input2}
           type="number"
+          value={input2}
           min={0}
-          onChange={(e) => setInput2(+e.target.value)}
+          onChange={handleInput2Change}
         />
       </div>
     </div>
