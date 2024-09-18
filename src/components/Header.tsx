@@ -1,27 +1,37 @@
-import { useEffect, useState } from 'react';
+import { FC } from 'react';
 import { NBUStat } from '../types/NBUStatType';
+import '../styles/Header.scss';
 
-const Header = () => {
-  const [data, setData] = useState<NBUStat[]>([]);
+type Props = {
+  data: NBUStat[];
+};
 
-  useEffect(() => {
-    fetch('https://bank.gov.ua/NBUStatService/v1/statdirectory/exchange?json')
-      .then((resp) => resp.json())
-      .then((resp) => setData(resp))
-      .catch((error) => console.error('Помилка загрузки даних', error));
-  }, []);
+const Header: FC<Props> = ({ data }) => {
+  if (!data || data.length === 0) {
+    return <div>Загрузка актуальних даних...</div>;
+  }
 
   const USD = data.find((el) => el.cc === 'USD');
   const EUR = data.find((el) => el.cc === 'EUR');
 
   return (
-    <div>
-      <p>
+    <div className="header">
+      <p className="header__title">
         Aктуальний курс валют на {USD?.exchangedate} по відношенню до гривні:
       </p>
-      <div>
-        <p>USD = {USD?.rate}</p>
-        <p>EUR = {EUR?.rate}</p>
+      <div className="header__container">
+        <p className="header__container-text">
+          USD ={' '}
+          <span className="header__container-text-color">
+            {USD?.rate.toFixed(2)}
+          </span>
+        </p>
+        <p className="header__container-text">
+          EUR ={' '}
+          <span className="header__container-text-color">
+            {EUR?.rate.toFixed(2)}
+          </span>
+        </p>
       </div>
     </div>
   );

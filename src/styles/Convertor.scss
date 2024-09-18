@@ -1,0 +1,32 @@
+.convertor {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+
+  @media screen and (max-width: 500px) {
+    flex-direction: column;
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  &__field {
+    padding: 5px;
+    background: rgba(235, 235, 4, 0.438);
+    outline: none;
+    border: 2px solid yellow;
+    border-radius: 4px;
+    font-weight: bolder;
+
+    &:hover {
+      border: 2px solid white;
+    }
+
+    &:focus {
+      border: 2px solid white;
+    }
+  }
+}

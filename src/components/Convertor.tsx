@@ -1,8 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, FC } from 'react';
 import { CurrencyType } from '../types/CurrencyType';
+import '../styles/Convertor.scss';
 
-const Converter = () => {
-  const [currencies, setCurrencies] = useState<CurrencyType[]>([]);
+type Props = {
+  currencies: CurrencyType[];
+};
+
+const Converter: FC<Props> = ({ currencies }) => {
   const [input1, setInput1] = useState(0);
   const [input2, setInput2] = useState(0);
   const [select1, setSelect1] = useState('USD');
@@ -10,19 +14,13 @@ const Converter = () => {
 
   const activeInput = useRef<'input1' | 'input2' | null>(null);
 
-  useEffect(() => {
-    fetch('/currencies.json') // для конвертора роблю свій json бо на всіх api функціонал з квейрі параметрами платний
-      .then((resp) => resp.json())
-      .then((data) => setCurrencies(data.currencies));
-  }, []);
-
   const convert = (count: number, from: string, to: string) => {
-    const fromCurrency = currencies.find((c) => c.name === from);
-    const toCurrency = currencies.find((c) => c.name === to)?.name;
+    const fromCurrency = currencies?.find((c) => c.name === from);
+    const toCurrency = currencies?.find((c) => c.name === to)?.name;
 
     if (fromCurrency && toCurrency) {
       const rate = fromCurrency.rates[toCurrency];
-      return count * rate;
+      return (count * rate).toFixed(2);
     }
     return 0;
   };
@@ -31,7 +29,7 @@ const Converter = () => {
     if (activeInput.current === 'input1') {
       const newValue = convert(input1, select1, select2);
       if (newValue !== input2) {
-        setInput2(newValue);
+        setInput2(+newValue);
       }
     }
   }, [input1, select1, select2, currencies]);
@@ -40,7 +38,7 @@ const Converter = () => {
     if (activeInput.current === 'input2') {
       const newValue = convert(input2, select2, select1);
       if (newValue !== input1) {
-        setInput1(newValue);
+        setInput1(+newValue);
       }
     }
   }, [input2, select1, select2, currencies]);
@@ -55,17 +53,30 @@ const Converter = () => {
     setInput2(+e.target.value);
   };
 
+  if (!currencies || currencies.length === 0) {
+    return <div>Загрузка конвертера...</div>;
+  }
+
   return (
-    <div>
-      <div>
-        <select value={select1} onChange={(e) => setSelect1(e.target.value)}>
+    <div className="convertor">
+      <div className="convertor__container">
+        <select
+          className="convertor__field"
+          value={select1}
+          onChange={(e) => setSelect1(e.target.value)}
+        >
           {currencies.map((currency) => (
-            <option key={currency.name} value={currency.name}>
+            <option
+              className="convertor__field-option"
+              key={currency.name}
+              value={currency.name}
+            >
               {currency.fullName}
             </option>
           ))}
         </select>
         <input
+          className="convertor__field"
           type="number"
           min={0}
           value={input1}
@@ -73,15 +84,24 @@ const Converter = () => {
         />
       </div>
 
-      <div>
-        <select value={select2} onChange={(e) => setSelect2(e.target.value)}>
+      <div className="convertor__container">
+        <select
+          className="convertor__field"
+          value={select2}
+          onChange={(e) => setSelect2(e.target.value)}
+        >
           {currencies.map((currency) => (
-            <option key={currency.name} value={currency.name}>
+            <option
+              className="convertor__field-option"
+              key={currency.name}
+              value={currency.name}
+            >
               {currency.fullName}
             </option>
           ))}
         </select>
         <input
+          className="convertor__field"
           type="number"
           value={input2}
           min={0}
