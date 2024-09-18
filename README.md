@@ -66,6 +66,6 @@ Create a currency converter application that allows users to convert between at 
 
 ## Deliverables
 
-`GitHub Repository:` https://github.com/RomanOstrous/smart-user-table
+`GitHub Repository:` https://github.com/RomanOstrous/currency_converter
 
-`Demo Link:` https://romanostrous.github.io/smart-user-table/
+`Demo Link:` https://romanostrous.github.io/currency_converter/
