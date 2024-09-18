@@ -1,0 +1,44 @@
+{
+  "currencies": [
+    {
+      "name": "UAH",
+      "fullName": "Українська гривня",
+      "rates": {
+        "USD": 0.024,
+        "EUR": 0.022,
+        "GBP": 0.018,
+        "UAH": 1
+      }
+    },
+    {
+      "name": "USD",
+      "fullName": "Долар США",
+      "rates": {
+        "UAH": 41.48,
+        "EUR": 0.9,
+        "USD": 1,
+        "GBP": 0.76
+      }
+    },
+    {
+      "name": "EUR",
+      "fullName": "Євро",
+      "rates": {
+        "UAH": 46.11,
+        "USD": 1.11,
+        "EUR": 1,
+        "GBP": 0.84
+      }
+    },
+    {
+      "name": "GBP",
+      "fullName": "Фунт стерлінгів",
+      "rates": {
+        "UAH": 54.59,
+        "USD": 1.32,
+        "GBP": 1,
+        "EUR": 1.18
+      }
+    }
+  ]
+}
